@@ -1,0 +1,44 @@
+.dataTable {
+    background-color: white;
+    color: black;
+}
+
+.dataTable-dropdown {
+    all: unset;
+    cursor: pointer;
+    width: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dt-length {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.dt-input {
+    background-color: white !important;
+}
+
+.dt-length label {
+    margin: 0 !important;
+}
+
+.dataTable tr {
+    background-color: white !important;
+}
+
+.dataTable tr:hover {
+    background-color: rgb(243, 243, 243) !important;
+}
+
+.dataTable-actions {
+    opacity: 0%;
+}
+
+.dataTable tr:hover .dataTable-actions {
+    opacity: 100%;
+}

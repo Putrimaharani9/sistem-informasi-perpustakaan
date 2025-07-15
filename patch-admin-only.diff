@@ -1,0 +1,114 @@
+\
+diff --git a/routes/web.php b/routes/web.php
+index abc1234..xyz5678 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@
+-Route::middleware(['auth', 'petugas'])->group(function () {
+-    // route petugas
+-});
+-
+-Route::middleware(['auth', 'anggota'])->group(function () {
+-    // route anggota
+-});
+-
+ Route::middleware(['auth', 'admin'])->group(function () {
+     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+     Route::resource('users', UserController::class);
+     Route::resource('books', BookController::class);
+     Route::resource('members', MemberController::class);
+     Route::resource('transactions', TransactionController::class);
+ });
+
+diff --git a/app/Http/Kernel.php b/app/Http/Kernel.php
+index abc1234..xyz5678 100644
+--- a/app/Http/Kernel.php
++++ b/app/Http/Kernel.php
+@@
+-    'petugas' => \App\Http\Middleware\PetugasMiddleware::class,
+-    'anggota' => \App\Http\Middleware\AnggotaMiddleware::class,
++    'admin' => \App\Http\Middleware\AdminMiddleware::class,
+
+diff --git a/database/seeders/AdminUserSeeder.php b/database/seeders/AdminUserSeeder.php
+new file mode 100644
+--- /dev/null
++++ b/database/seeders/AdminUserSeeder.php
+@@
++<?php
++
++namespace Database\Seeders;
++
++use Illuminate\Database\Seeder;
++use Illuminate\Support\Facades\Hash;
++use App\Models\User;
++
++class AdminUserSeeder extends Seeder
++{
++    public function run()
++    {
++        User::create([
++            'name' => 'Admin',
++            'email' => 'admin@example.com',
++            'password' => Hash::make('admin123'),
++            'role' => 'admin',
++        ]);
++    }
++}
+
+diff --git a/app/Http/Middleware/AdminMiddleware.php b/app/Http/Middleware/AdminMiddleware.php
+new file mode 100644
+--- /dev/null
++++ b/app/Http/Middleware/AdminMiddleware.php
+@@
++<?php
++
++namespace App\Http\Middleware;
++
++use Closure;
++use Illuminate\Support\Facades\Auth;
++
++class AdminMiddleware
++{
++    public function handle($request, Closure $next)
++    {
++        if (!Auth::check() || Auth::user()->role !== 'admin') {
++            return redirect()->route('login')->withErrors('Hanya admin yang bisa mengakses.');
++        }
++        return $next($request);
++    }
++}
+
+diff --git a/resources/views/dashboard.blade.php b/resources/views/dashboard.blade.php
+index abc1234..xyz5678 100644
+--- a/resources/views/dashboard.blade.php
++++ b/resources/views/dashboard.blade.php
+@@
+-@extends('layouts.petugas')
+-@section('content')
+-    <p>Selamat datang petugas</p>
+-@endsection
++@extends('layouts.admin')
++@section('content')
++    <h1>Welcome, Admin!</h1>
++    <p>Ini halaman dashboard admin.</p>
++@endsection
+
+diff --git a/resources/views/layouts/admin.blade.php b/resources/views/layouts/admin.blade.php
+new file mode 100644
+--- /dev/null
++++ b/resources/views/layouts/admin.blade.php
+@@
++<!DOCTYPE html>
++<html>
++<head>
++    <title>Admin Panel</title>
++</head>
++<body>
++    <nav>
++        <!-- Menu admin di sini -->
++    </nav>
++    <div>
++        @yield('content')
++    </div>
++</body>
++</html>
