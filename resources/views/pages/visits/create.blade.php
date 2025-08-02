@@ -24,7 +24,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <button type="button" onClick="onSubmitVisit()" class="btn btn-primary">Tambah</a>
+                <button type="button" onClick="onSubmitVisit()" class="btn btn-primary">Tambah</button>
             </div>
         </form>
     </div>
@@ -36,48 +36,47 @@
 
 @push('scripts')
     <script src="/vendor/select2/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
             $('#member_id').select2({
                 placeholder: 'Pilih Anggota',
                 ajax: {
-                    url: "{{ route('members.ajax.get') }}",
+                    url: "{{ url('/members/search') }}", // pastikan sesuai dengan route
                     dataType: 'json',
+                    delay: 500,
                     data: function(params) {
                         return {
-                            search: params.term,
-                            page: params.page || 1
-                        }
+                            term: params.term // ini cocok dengan $request->get('term') di controller
+                        };
                     },
-                    delay: 800,
                     processResults: function(data) {
                         return {
-                            results: data.data.map((data) => ({
-                                id: data.id,
-                                text: `${data.name} - ${data.email}`
-                            })),
-                            pagination: {
-                                more: data.last_page > data.current_page
-                            }
+                            results: data.map((member) => ({
+                                id: member.id,
+                                text: `${member.name} - ${member.email}`
+                            }))
                         };
-                    }
+                    },
+                    cache: true
                 },
+                minimumInputLength: 1
             });
         });
 
-        const onSubmitVisit = async (event) => {
-            const {
-                isConfirmed
-            } = await Swal.fire({
+        const onSubmitVisit = async () => {
+            const result = await Swal.fire({
                 title: 'Konfirmasi Kunjungan',
                 text: 'Pastikan data yang diisi benar',
+                icon: 'question',
                 showCancelButton: true,
-            })
+                confirmButtonText: 'Ya, simpan',
+                cancelButtonText: 'Batal'
+            });
 
-            if (isConfirmed) {
-                const form = document.getElementById('visit-form')
-                form.submit();
+            if (result.isConfirmed) {
+                document.getElementById('visit-form').submit();
             }
         }
     </script>

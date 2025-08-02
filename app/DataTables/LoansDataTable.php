@@ -24,7 +24,7 @@ class LoansDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addColumn('action', 'loan.action')
             ->editColumn('member_id', function (Loan $loan) {
-                return $loan->member->name ?? 'Anggota Tidak Ditemukan';
+                return $loan->member->nama ?? 'Anggota Tidak Ditemukan';
             })
             ->editColumn('book_name', function (Loan $loan) {
                 return $loan->book->title ?? 'Buku Tidak Ditemukan';

@@ -20,8 +20,8 @@ class BookCopy extends Model
     /**
      * Define relationship for original book
      */
-    public function book(): HasOne
-    {
-        return $this->hasOne(Book::class, 'id', 'book_id');
-    }
+    public function book(): BelongsTo
+{
+    return $this->belongsTo(Book::class);
+}
 }

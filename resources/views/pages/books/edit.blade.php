@@ -8,7 +8,7 @@
 @section('content')
     <div class="container-fluid">
         @include('partials.alert')
-        
+
         <div class="d-sm-flex align-items-center justify-content-between">
             <div>
                 <h1 class="h4 mb-0 text--black">Edit Buku</h1>
@@ -16,10 +16,21 @@
             </div>
         </div>
 
-        <form method="POST" action={{ route('book.update', $data->id) }}>
+        <form method="POST" action="{{ route('book.update', $data->id) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="card p-4">
+                <div class="form-group">
+                    <label for="cover">Foto Cover</label>
+                    <input type="file" name="cover" class="form-control">
+                    @if($data->cover)
+                    <div class="mt-2">
+                        <img src="{{ asset('storage/covers/' . $data->cover) }}" alt="Cover Buku" style="max-width: 200px;">
+                    </div>
+                @endif
+
+                </div>
+
                 <div class="form-group">
                     <label for="title">Judul</label>
                     <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"

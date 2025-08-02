@@ -48,17 +48,24 @@
         <div class="bg-white shadow-lg d-flex rounded-lg overflow-hidden login"
             style="max-width: 1000px; height: 350px; width: 100%;">
             <div style="width: 50%; height: 100%" class="login__left">
-                <img src="{{ '/img/' . getSetting('app_cover') }}" alt=""
+                <img src="{{ '/img/coverreal.png' . getSetting('app_cover') }}" alt=""
                     style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
             </div>
 
             <div class="d-flex flex-column justify-content-center align-items-center px-5 py-5 login__right"
-                style="width: 50%; height: 100%; gap: 20px;">
-                <div style="width: 40px; aspect-ratio: 1;">
-                    <img src="{{ '/img/' . getSetting('app_icon') }}" alt=""
-                        style="width: 100%; height: 100%; object-fit: cover; object-position: center">
+                style="width: 50%; height: 100%; gap: 0px;">
+                <div style="display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 40px; aspect-ratio: 1;">
+                        <img src="{{ '/img/logo1.png' . getSetting('app_icon') }}" alt=""
+                            style="width: 200%; height: auto; object-fit: contain; display: block;">
+                    </div>
+                    <div>
+                        <h1 class="text-center h5">{{ getSetting('app_name') }}</h1>
+                        <h5 class="text-white fw-bold">
+                            ADMIN LOGIN
+                        </h5>
+                    </div>
                 </div>
-                <h1 class="text-center h5">{{ getSetting('app_name') }}</h1>
 
 
                 <form action="{{ route('authenticate') }}" method="POST" class="d-flex flex-column" id="login-form"
@@ -79,7 +86,7 @@
                     <div class="form-group">
                         <input type="password" name='password'
                             class="form-control form-control-user @error('password') is-invalid @enderror"
-                            id="exampleInputPassword" placeholder="Kata Sandi">
+                            id="exampleInputPassword" placeholder="Password">
 
                         @error('password')
                         <div class="invalid-feedback d-block">
@@ -91,7 +98,7 @@
                     <input style="display: none;" name="device_id" />
 
                     <button type="submit" class="btn btn-primary btn-user btn-block">
-                        Masuk
+                        Login
                     </button>
 
                     <!-- <button type="button" onclick="testNotification()" class="btn btn-secondary btn-user btn-block">

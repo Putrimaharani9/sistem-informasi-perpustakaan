@@ -1,7 +1,7 @@
 @extends('template')
 @section('title', "Edit Kategori Buku - $data->name")
 
-@php
+<?php
     $roles = App\Models\UserRole::all();
 @endphp
 

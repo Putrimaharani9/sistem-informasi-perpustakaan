@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\MembersDataTable;
 use App\Http\Requests\StoreMemberRequest;
 use App\Models\User;
+use App\Models\Member;
 use Exception;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
@@ -141,11 +142,18 @@ class MemberController extends Controller
     /**
      * Get paginated data via ajax
      */
+
     public function ajax_get(Request $request)
-    {
-        $data = User::role('member')->paginate(15);
+{
+    $query = Member::query();
 
+    if ($search = $request->input('search')) {
+        $query->where('anggota', 'like', "%$search%")
+              ->orWhere('nip', 'like', "%$search%");
+    }
 
-        return response()->json($data);
+    $members = $query->paginate(15);
+
+    return response()->json($members);
     }
 }

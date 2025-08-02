@@ -19,9 +19,9 @@ class Loan extends Model
     /**
      * Define hasOne relationship for book copy
      */
-    public function copy(): HasOne
-    {
-        return $this->hasOne(BookCopy::class, 'id', 'copy_id');
+    public function copy()
+{
+    return $this->belongsTo(\App\Models\BookCopy::class, 'copy_id');
     }
 
     /**
@@ -37,7 +37,7 @@ class Loan extends Model
      */
     public function member(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'member_id');
+        return $this->belongsTo(Member::class, 'member_id', 'id_anggota'); // atau id_anggota
     }
 
     /**

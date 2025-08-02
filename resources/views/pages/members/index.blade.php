@@ -15,7 +15,7 @@
 @endsection
 
 @push('scripts')
-    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+    {!! $dataTable->scripts(attributes: ['type' => 'module']) !!}
 
     <script>
         const onDeleteMember = async (event) => {

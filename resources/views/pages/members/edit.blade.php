@@ -1,5 +1,6 @@
 @extends('template')
-@section('title', "Edit Anggota - $data->name")
+@section('title', "Edit Anggota - $member->nama")
+
 
 @section('content')
     <div class="container-fluid">
@@ -12,8 +13,7 @@
             </div>
         </div>
 
-        <form method="POST" action={{ route('members.update', $data->id) }} enctype="multipart/form-data">
-            @csrf
+        action="{{ route('members.update', ['member' => $member->id]) }}"
             @method('PUT')
             <div class="card p-4">
                 <div class="form-group">

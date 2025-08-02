@@ -1,12 +1,13 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center my-2" href="/">
-        <div class="sidebar-brand-icon" style="width: 40px; overflow: hidden; height: 40px; min-width: 40px;">
-            <img style="width: 100%; height: 100%; object-fit: contain; object-position: center;"
-                src="/img/{{ getSetting('app_icon') }}" alt="">
+    <a class="sidebar-brand d-flex flex-column align-items-center justify-content-center py-2" href="/">
+        <div class="sidebar-brand-icon">
+            <img src="{{ asset('img/logo1.png') }}" alt="Logo"
+                 style="height: 100px; width: auto; object-fit: contain;">
         </div>
-        <div class="sidebar-brand-text mx-3" style="text-align: start;">{{ getSetting('app_name') }}</div>
+        <div class="sidebar-brand-text text-center" style="font-size: 14px; margin-top: -39px;">
+            {{ getSetting('app_name') }}
+        </div>
     </a>
-
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
@@ -82,24 +83,10 @@
 
     @role('developer|admin')
         <!-- Group Admin -->
-        <div class="sidebar-heading">Admin</div>
-        <li class="nav-item {{ Request::is('staffs') ? 'active' : '' }}">
-            <a class="nav-link" href="/staffs">
-                <i class="fa fa-fw fa-users"></i>
-                <span>Staff</span>
-            </a>
+        {{-- <div class="sidebar-heading">Admin</div> --}}
+
         </li>
-        <li class="nav-item {{ Request::query('type') === 'library' ? 'active' : '' }}">
-            <a class="nav-link" href="/settings?type=library">
-                <i class="fa fa-fw fa-cog"></i>
-                <span>Pengaturan Perpustakaan</span>
-            </a>
-        </li>
-        <li class="nav-item {{ Request::query('type') === 'system' ? 'active' : '' }}">
-            <a class="nav-link" href="/settings?type=system">
-                <i class="fa fa-fw fa-cog"></i>
-                <span>Pengaturan Sistem</span>
-            </a>
+
         </li>
     @endrole
 

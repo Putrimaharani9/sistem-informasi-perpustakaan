@@ -2,82 +2,69 @@
 
 namespace App\DataTables;
 
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Button;
+use App\Models\Member;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Services\DataTable;
 
 class MembersDataTable extends DataTable
 {
-    /**
-     * Build the DataTable class.
-     *
-     * @param QueryBuilder $query Results from query() method.
-     */
-    public function dataTable(QueryBuilder $query): EloquentDataTable
+    public function dataTable($query)
     {
-        return (new EloquentDataTable($query))
-            ->addColumn('actions', 'pages.members.actions')
-            ->editColumn('created_at', function ($row) {
-                return Carbon::parse($row->created_at)->format('d M y');
-            })
-            ->rawColumns(['actions'])
-            ->setRowId('id');
+        return datatables()
+        ->eloquent($query) //// Gunakan collection agar accessor (getter) jalan
+            ->addColumn('nik', fn($row) => $row->nik) // Sudah didekripsi otomatis
+            ->addColumn('email', fn($row) => $row->email)
+            ->addColumn('alamat', fn($row) => $row->alamat)
+            ->addColumn('nomor_telepon', fn($row) => $row->nomor_telepon)
+            ->addColumn('status_anggota', fn($row) => $row->status_anggota) // enum, tampilkan langsung
+            ->addColumn('actions', fn($member) => view('pages.members.actions', compact('member'))->render())
+            ->rawColumns(['actions']);
     }
 
-    /**
-     * Get the query source of dataTable.
-     */
-    public function query(User $model): QueryBuilder
+    public function query(Member $model)
     {
-        return $model->newQuery()->role('member');
+        // get() agar return berupa Collection, bisa pakai accessor
+        return $model->newQuery()->orderBy('nama', 'asc');
     }
 
-    /**
-     * Optional method if you want to use the html builder.
-     */
-    public function html(): HtmlBuilder
+    public function html(): Builder
     {
         return $this->builder()
-                    ->setTableId('members-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('members-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload'),
+            ]);
     }
 
-    /**
-     * Get the dataTable columns definition.
-     */
-    public function getColumns(): array
+    protected function getColumns()
     {
         return [
-            Column::make('name')->title('Nama'),
-            Column::make('address')->title('Alamat'),
+            Column::make('id_anggota')->title('ID Anggota'),
+            Column::make('nama')->title('Nama'),
+            Column::make('nik')->title('NIK'),
             Column::make('email')->title('Email'),
-            Column::make('phone_number')->title('Nomor Telepon'),
-            Column::make('created_at')->title('Anggota Sejak'),
-            Column::make('actions')->title('')->orderable(false),
+            Column::make('alamat')->title('Alamat'),
+            Column::make('nomor_telepon')->title('Nomor Telepon'),
+            Column::make('status_anggota')->title('Status Anggota'),
+            Column::computed('actions')
+                ->title('Aksi')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false),
         ];
     }
 
-    /**
-     * Get the filename for export.
-     */
     protected function filename(): string
     {
         return 'Members_' . date('YmdHis');

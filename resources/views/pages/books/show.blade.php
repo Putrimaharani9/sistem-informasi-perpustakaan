@@ -11,9 +11,16 @@
 
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h4 mb-0 text--black">Detail Buku</h1>
-
             <a href="{{ route('book.edit', $data->id) }}" class="btn btn-primary">Edit</a>
         </div>
+
+        {{-- ✅ Tampilkan cover buku jika ada --}}
+        @if ($data->cover)
+            <div class="mb-4 text-center">
+                <img src="{{ asset('storage/' . $data->cover) }}" alt="Cover Buku {{ $data->title }}"
+                    class="img-thumbnail shadow" style="max-height: 300px;">
+            </div>
+        @endif
 
         <form method="POST" action={{ route('book.update', $data->id) }}>
             @method('PUT')
@@ -73,7 +80,6 @@
                     <label for="category_id">Kategori</label>
                     <input readonly type="text" class="form-control" id="category_id" name="publish_year"
                         placeholder="Kategori" value="{{ $data->category->name ?? '' }}">
-                    </select>
 
                     @error('category_id')
                         <div class="d-block invalid-feedback">

@@ -8,7 +8,21 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>@yield('title', $pageTitle . ' - ' . getSetting('app_name'))</title>
+    <title>
+        @hasSection('title')
+            @yield('title')
+        @else
+            {{ getSetting('app_name') }}
+        @endif
+    </title>
+    <title>
+        @hasSection('title')
+            @yield('title')
+        @else
+            {{ getSetting('app_name') }}
+        @endif
+    </title>
+
     <link rel="shortcut icon" href="/img/{{ getSetting('app_icon') }}" type="image/x-icon">
 
     <!-- Custom fonts for this template-->

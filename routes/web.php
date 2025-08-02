@@ -5,8 +5,8 @@ use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCopyController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoanController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\SettingController;
@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => 'role:staff|developer'], function () {
         // Books
         Route::post('/book-copies/import-copies', [BookCopyController::class, 'import'])->name('book-copies.import');
+        // Route AJAX untuk salinan buku
+Route::get('/ajax/copies', [BookCopyController::class, 'ajax_get'])->name('copies.ajax.get');
+
         Route::post('/books/import', [BookController::class, 'import'])->name('books.import');
         Route::get('/books', [BookController::class, 'index'])->name('book.index');
         Route::post('/books', [BookController::class, 'store'])->name('book.store');
@@ -61,6 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/books/{book}/delete', [BookController::class, 'destroy'])->name('book.delete');
         Route::get('/books/{book}', [BookController::class, 'show'])->name('book.show');
 
+
         // Book Copy
         Route::get('/books/{book}/copies/create', [BookCopyController::class, 'create'])->name('copy.create');
         Route::post('/books/{book}/copies', [BookCopyController::class, 'store'])->name('copy.store');
@@ -68,7 +72,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/ajax/copies', [BookCopyController::class, 'ajax_get'])->name('copies.ajax.get');
 
         // Member
-        Route::resource('/members', MemberController::class);
+        Route::resource('members', \App\Http\Controllers\MemberFromController::class);
+        Route::get('/members/ajax/get', [MemberFromController::class, 'ajax_get'])->name('members.ajax.get');
+
+
 
         // Book Category
         Route::resource('book-categories', BookCategoryController::class);
@@ -82,8 +89,13 @@ Route::middleware('auth')->group(function () {
 
         // Visit
         Route::resource('/visits', VisitController::class);
+        Route::get('/members/search', [VisitController::class, 'searchMembers']);
+
     });
 
+    Route::get('/cek-enkripsi', function () {
+        // paste script di atas di sini
+    });
 
     Route::group(['middleware' => 'role:admin|developer'], function () {
         // Staffs / Users
@@ -92,7 +104,6 @@ Route::middleware('auth')->group(function () {
         // Setting
         Route::resource('/settings', SettingController::class);
     });
-});
 
 Route::get('/test-notification', function () {
     $deviceToken = 'fkus9BonurEbT2hFFWLKP2:APA91bHTyTkddbsC3bKu1AMXvPZxTRCFjIBSUdbuyOGwOzx3vDlFcxtfaXlj8KiWZzP8EV8pDmVja6CGlxi2eQ0ixbyC5czOVXNCPAG-W1nN2-HMonMW87o';
@@ -110,3 +121,6 @@ Route::get('/test-notification', function () {
 
     $messaging->send($message);
 });
+});
+
+

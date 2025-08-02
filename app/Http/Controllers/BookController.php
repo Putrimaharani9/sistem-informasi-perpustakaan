@@ -10,6 +10,7 @@ use App\Models\Book;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 use Maatwebsite\Excel\Facades\Excel;
 
 class BookController extends Controller
@@ -36,7 +37,7 @@ class BookController extends Controller
     }
 
     /**
-     * Show book detail
+     * Show book edit form
      */
     public function edit(Book $book, BookCopiesDataTable $dataTable)
     {
@@ -46,7 +47,6 @@ class BookController extends Controller
             'pageTitle' => $pageTitle
         ]);
     }
-
 
     /**
      * Show create form
@@ -66,6 +66,12 @@ class BookController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // Upload cover jika tersedia
+            if ($request->hasFile('cover')) {
+                $data['cover'] = $request->file('cover')->store('covers', 'public');
+            }
+
             $book = Book::create([
                 ...$data,
                 'created_by' => $request->user()->id
@@ -75,13 +81,9 @@ class BookController extends Controller
             return redirect()->route('book.show', $book->id)->with('success', 'Data berhasil ditambahkan');
         } catch (Exception $exception) {
             DB::rollBack();
-
             return redirect()->route('book.index')->with('error', 'Terjadi kesalahan pada server');
         }
-
-        return view('pages.books.create');
     }
-
 
     /**
      * Update data
@@ -92,17 +94,25 @@ class BookController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // Jika ada cover baru diupload
+            if ($request->hasFile('cover')) {
+                // Hapus cover lama jika ada
+                if ($book->cover && Storage::disk('public')->exists($book->cover)) {
+                    Storage::disk('public')->delete($book->cover);
+                }
+
+                $data['cover'] = $request->file('cover')->store('covers', 'public');
+            }
+
             $book->update($data);
 
             DB::commit();
             return redirect()->route('book.show', $book->id)->with('success', 'Berhasil memperbarui data');
         } catch (Exception $exception) {
             DB::rollBack();
-
             return redirect()->back()->with('error', 'Terjadi kesalahan pada server');
         }
-
-        return view('pages.books.create');
     }
 
     /**
@@ -112,6 +122,12 @@ class BookController extends Controller
     {
         try {
             DB::beginTransaction();
+
+            // Hapus cover dari storage jika ada
+            if ($book->cover && Storage::disk('public')->exists($book->cover)) {
+                Storage::disk('public')->delete($book->cover);
+            }
+
             $book->delete();
 
             DB::commit();

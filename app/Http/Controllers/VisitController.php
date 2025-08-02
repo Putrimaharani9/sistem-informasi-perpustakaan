@@ -25,7 +25,6 @@ class VisitController extends Controller
     public function create()
     {
         $pageTitle = 'Tambah Kunjungan';
-
         return view('pages.visits.create', compact('pageTitle'));
     }
 
@@ -71,5 +70,28 @@ class VisitController extends Controller
     public function destroy(Visit $visit)
     {
         //
+    }
+
+    /**
+     * Search members for Select2.
+     */
+    public function searchMembers(Request $request)
+    {
+        $search = $request->get('term');
+
+        $members = Member::where('name', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->limit(10)
+            ->get();
+
+        $results = $members->map(function ($member) {
+            return [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email,
+            ];
+        });
+
+        return response()->json($results);
     }
 }
